@@ -1,5 +1,7 @@
 #!/usr/bin/python3
-"""This is the console for AirBnB"""
+"""
+This is the console for AirBnB
+"""
 import cmd
 from models import storage
 from datetime import datetime
@@ -11,10 +13,12 @@ from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
 from shlex import split
+import shlex
 
 
 class HBNBCommand(cmd.Cmd):
-    """this class is entry point of the command interpreter
+    """
+    This class is entry point of the command interpreter
     """
     prompt = "(hbnb) "
     all_classes = {"BaseModel", "User", "State", "City",
@@ -43,19 +47,19 @@ class HBNBCommand(cmd.Cmd):
                 raise SyntaxError()
             my_list = line.split(" ")
             obj = eval("{}()".format(my_list[0]))
-            print("{}".format(obj.id))
-            for num in range(1, len(my_list)):
-                my_list[num] = my_list[num].replace('=', ' ')
-                attributes = split(my_list[num])
-                attributes[1] = attributes[1].replace('_', ' ')
+            for i in range(1, len(my_list)):
+                arg = my_list[i].replace("=", " ")
+                arg = shlex.split(arg)
+                arg2 = arg[1].replace("_", " ")
                 try:
-                    var = eval(attributes[1])
-                    attributes[1] = var
+                    pru = eval(arg2)
+                    arg2 = pru
                 except:
                     pass
-                if type(attributes[1]) is not tuple:
-                    setattr(obj, attributes[0], attributes[1])
+                if type(arg2) is not tuple:
+                    setattr(obj, arg[0], arg2)
             obj.save()
+            print("{}".format(obj.id))
         except SyntaxError:
             print("** class name missing **")
         except NameError:
@@ -178,7 +182,7 @@ class HBNBCommand(cmd.Cmd):
             try:
                 v.__dict__[my_list[2]] = eval(my_list[3])
             except Exception:
-                v.__dict__[my_list[2]] = my_list[3]
+                v.__dict__[my_list[2]] = my_list[3].replace("_", ' ')
                 v.save()
         except SyntaxError:
             print("** class name missing **")
@@ -215,8 +219,7 @@ class HBNBCommand(cmd.Cmd):
         Args:
             args: input list of args
         Return:
-            returns string of argumetns
-        """
+            returns string of argumetns """
         new_list = []
         new_list.append(args[0])
         try:
