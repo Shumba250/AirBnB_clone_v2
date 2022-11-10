@@ -3,6 +3,7 @@
 from flask import Flask, render_template
 from models import storage
 from models.state import State
+from models.amenity import Amenity
 
 
 app = Flask(__name__)
@@ -14,14 +15,15 @@ def teardown_session(exception):
     storage.close()
 
 
-@app.route('/states_list', strict_slashes=False)
+@app.route('/hbnb_filters/', strict_slashes=False)
 def display_html():
-    """ Function called with /states_list route """
+    """ Function called with /states route """
     states = storage.all(State)
-    dict_to_html = {value.id: value.name for value in states.values()}
-    return render_template('7-states_list.html',
-                           Table="States",
-                           items=dict_to_html)
+    amenities = storage.all(Amenity)
+
+    return render_template('10-hbnb_filters.html',
+                           states=states.values(),
+                           amenities=amenities.values())
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
